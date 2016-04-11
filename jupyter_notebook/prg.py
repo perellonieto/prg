@@ -18,8 +18,10 @@ __status__ = "Prototype"
 def precision(tp, tn, fp, fn):
     return tp/(tp + fp)
 
+
 def recall(tp, tn, fp, fn):
     return tp/(tp + fn)
+
 
 def precision_gain(tp, fn, fp, tn):
     """Calculates Precision Gain from the contingency table
@@ -216,6 +218,7 @@ def create_prg_curve(labels, pos_scores, neg_scores=[],
                                               points['precision_gain'] >= 0)
     return points
 
+
 def calc_auprg(prg_curve):
     """Calculate area under the Precision-Recall-Gain curve
 
@@ -268,6 +271,7 @@ def convex_hull(points):
 
     return upper
 
+
 #' Plot the Precision-Recall-Gain curve
 #'
 #' This function plots the Precision-Recall-Gain curve resulting from the function create_prg_curve using ggplot. More information on Precision-Recall-Gain curves and how to cite this work is available at http://www.cs.bris.ac.uk/~flach/PRGcurves/.
@@ -280,7 +284,7 @@ def convex_hull(points):
 #' labels = c(1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1)
 #' scores = (25:1)/25
 #' plot_prg(create_prg_curve(labels,scores))
-def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=True):
+def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=False):
     pg = prg_curve['precision_gain']
     rg = prg_curve['recall_gain']
 
@@ -320,15 +324,9 @@ def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=True):
     rg_hull, pg_hull = zip(*upper_hull)
     if show_convex_hull:
         plt.plot(rg_hull, pg_hull, 'r--')
-
-#    if (show_f_calibrated_scores):
-#            y = convex_hull$precision_gain
-#        x = convex_hull$recall_gain
-#        convex_hull$ya = 0.5*(y+c(0,y[1:(length(y)-1)]))
-#        convex_hull$xa = 0.5*(x+c(0,x[1:(length(x)-1)]))
-#        if (nrow(convex_hull)>=3):
-#            p = p + ggplot2::geom_text(data=convex_hull[3:nrow(convex_hull),],ggplot2::aes(x=xa,y=ya,label=round(f_calibrated_score,2)),color="red",hjust=0,vjust=0)
-#    return(p)
+    if show_f_calibrated_scores:
+        raise Exception("Show calibrated scores not implemented yet")
+    plt.show()
 
 
 def test():
@@ -339,7 +337,6 @@ def test():
     auprg = calc_auprg(prg_curve)
     plot_prg(prg_curve)
 
-    plt.plot(prg_curve['recall_gain'], prg_curve_1['precision_gain'], 'bo-')
 
 if __name__ == '__main__':
     pass
